@@ -1,29 +1,43 @@
 <template>
-  <div class="form-group">
-    <input @change="$emit('change')" type="checkbox" id="toggle_1" class="chkbx-toggle" value="1" checked>
-    <label for="toggle_1"></label>
+  <div class="checkbox">
+    <input type="checkbox" id="toggle" class="checkbox__toggle" :checked="public"
+    @input="$emit('change', $event.target.checked)">
+    <label class="checkbox__label"  for="toggle"></label>
   </div>
 </template>
 
+<script>
+export default {
+  model: {
+    prop: 'public',
+    event: 'change'
+  },
+  props: {
+    public: {
+      type: Boolean
+    }
+  }
+}
+</script>
+
 <style scoped>
-.form-group{
+.checkbox{
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 15px 0 0;
 }
-.chkbx-toggle {
+.checkbox__toggle {
   display: none;
 }
 
-label {
+.checkbox__label {
     display: inline-block;
     max-width: 100%;
-    /* margin-bottom: 5px; */
     font-weight: 700;
 }
 
-.chkbx-toggle + label {
+.checkbox__toggle + .checkbox__label {
     position: relative;
     cursor: pointer;
     outline: none;
@@ -43,14 +57,14 @@ label {
     transition: background 0.4s;
 }
 
-.chkbx-toggle+label::before,
-.chkbx-toggle+label::after {
+.checkbox__toggle+.checkbox__label::before,
+.checkbox__toggle+.checkbox__label::after {
   content: "";
   display: block;
   position: absolute;
 }
 
-.chkbx-toggle + label::before {
+.checkbox__toggle + .checkbox__label::before {
     right: 1px;
     left: 1px;
     top: 1px;
@@ -64,7 +78,7 @@ label {
     -webkit-transition: background 0.4s;
     transition: background 0.4s;
 }
-.chkbx-toggle + label::after {
+.checkbox__toggle + .checkbox__label::after {
     top: -1px;
     left: 0;
     width: 22px;
@@ -83,15 +97,15 @@ label {
 }
 
 
-.chkbx-toggle:checked + label {
+.checkbox__toggle:checked + .checkbox__label {
     background-color: #7d7aff;
 }
 
-.chkbx-toggle:checked + label::before {
+.checkbox__toggle:checked + .checkbox__label::before {
     background-color: #6c6adb;
 }
 
-.chkbx-toggle:checked + label::after {
+.checkbox__toggle:checked + .checkbox__label::after {
     -moz-transform: translateX(20px);
     -ms-transform: translateX(20px);
     -webkit-transform: translateX(20px);
