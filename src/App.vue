@@ -1,55 +1,40 @@
 <script setup>
-import HelloWorld from "./components/HelloWorld.vue";
-import TheWelcome from "./components/TheWelcome.vue";
+import AppButton from './components/AppButton.vue';
+import RegistrationForm from './RegistrationForm.vue'
 </script>
 
 <template>
   <div id="app">
-    <header>
-      <img
-        alt="Vue logo"
-        class="logo"
-        src="./assets/logo.svg"
-        width="125"
-        height="125"
-      />
-
-      <div class="wrapper">
-        <HelloWorld msg="You did it!" />
+    <template v-if="!formOpen && !success">
+      <AppButton @click="openForm" />
+    </template>
+    <template v-else-if="formOpen && !success">
+      <RegistrationForm @response="(result) => {success = result}" @close="closeForm"/>
+    </template>
+    <template v-else>
+      <div class="container">
+        <h1 style="text-align: center;">Регистрация прошла успешно</h1>
       </div>
-    </header>
+    </template>
 
-    <main>
-      <TheWelcome />
-    </main>
   </div>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
+<script>
+export default {
+  data() {
+    return {
+      formOpen: false,
+      success: false,
+    }
+  },
+  methods: {
+    openForm() {
+      this.formOpen = true;
+    },
+    closeForm() {
+      this.formOpen = false;
+    },
+  },
 }
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
+</script>
