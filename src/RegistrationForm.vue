@@ -37,22 +37,22 @@ import PhotoUpload from './components/PhotoUpload.vue'
 
         <InputItem>
           <template #name>
-            <AppInput v-model="user.name" @input.native="errors.username = ''" placeholder="Имя"
+            <AppInput v-model="user.name" @input="errors.username = ''" placeholder="Имя"
               :error="errors.username" />
           </template>
           <template #role>
-            <AppSelect v-model="user.role" :options="options" :error="errors.role" @change.native="errors.role = ''" />
+            <AppSelect v-model="user.role" :options="options" :error="errors.role" @change="errors.role = ''" />
           </template>
           <template #email>
-            <AppInput v-model="user.email" @input.native="errors.email = ''" placeholder="Почта"
+            <AppInput v-model="user.email" @input="errors.email = ''" placeholder="Почта"
               :error="errors.email" />
           </template>
           <template #password>
-            <AppInput v-model="user.password" @input.native="errors.password = ''" type="password" placeholder="Пароль"
+            <AppInput v-model="user.password" @input="errors.password = ''" type="password" placeholder="Пароль"
               :error="errors.password" />
           </template>
           <template #password-repeat>
-            <AppInput v-model="user.password_repeat" @input.native="errors.password_repeat = ''" type="password"
+            <AppInput v-model="user.password_repeat" @input="errors.password_repeat = ''" type="password"
               placeholder="Пароль" :error="errors.password_repeat" />
           </template>
         </InputItem>
