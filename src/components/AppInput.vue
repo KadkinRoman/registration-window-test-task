@@ -2,28 +2,23 @@
   <div>
     <input 
       class="control" 
-      :value="userData" 
-      @input="$emit('input', $event.target.value)" 
       :type="type" 
       :placeholder="placeholder"
-      :class="{ 'control--error': userError }"
+      :value="value"
+      @input="$emit('input', $event.target.value);"
     />
     <small 
-      v-if="userError"
+      v-if="error"
       class="control-error-text">
-      {{ userError }}
+      {{ error }}
     </small> 
   </div>
 </template>
 
 <script>
 export default {
-  model: {
-    prop: 'userData',
-    event: 'input'
-  },
   props: {
-    userData: {
+    value: {
       type: String,
     },
     placeholder: {
@@ -33,10 +28,10 @@ export default {
       type: String,
       default: 'text'
     },
-    userError: {
+    error: {
       type: String,
     },
-  }
+  },
 }
 </script>
 
@@ -46,13 +41,10 @@ export default {
   border: 1px solid #e6e6eb;
   border-radius: 11px;
   padding: 10px;
-}
-
-.control::placeholder {
+  font-family: Montserrat;
   font-size: 14px;
   line-height: 136%;
   letter-spacing: -0.0015em;
-  color: #9292a0;
 }
 
 .control:focus {

@@ -3,7 +3,6 @@ import SectionItem from './layouts/SectionItem.vue';
 import InputItem from './layouts/InputItem.vue';
 import CloseButton from './components/CloseButton.vue';
 import AppButton from './components/AppButton.vue';
-import AppCheckboxToggle from './components/AppCheckboxToggle.vue'
 import AppCheckbox from './components/AppCheckbox.vue'
 import AppInput from './components/AppInput.vue';
 import AppSelect from './components/AppSelect.vue'
@@ -12,79 +11,79 @@ import PhotoUpload from './components/PhotoUpload.vue'
 
 <template>
   <div id="registration-form">
-      <header class="header">
-        <div class="header__container container">
-          <h1 class="header__title">Регистрация</h1>
-          <CloseButton @click.native="closeForm" />
-        </div>
-      </header>
-      <hr>
-      <main>
-        <SectionItem>
-          <template #heading>
-            <AppCheckboxToggle v-model="public" />
-            Публичный профиль {{ public }}
-          </template>
-          <p class="public-profile__text">Включает промо-страницу для просмотра пользователями по ссылке или из
-            каталога</p>
-        </SectionItem>
-        <div class="container">
-          <hr />
-        </div>
-        <SectionItem>
-          <template #heading>
-            Данные
-          </template>
+    <header class="header">
+      <div class="header__container container">
+        <h1 class="header__title">Регистрация</h1>
+        <CloseButton @click.native="closeForm" />
+      </div>
+    </header>
+    <hr>
+    <main>
+      <SectionItem>
+        <template #heading>
+          <AppCheckbox v-model="user.public" class="toggle-checkbox" :id="checkboxToggleId" />
+          Публичный профиль
+        </template>
+        <p class="public-profile__text">Включает промо-страницу для просмотра пользователями по ссылке или из
+          каталога</p>
+      </SectionItem>
+      <div class="container">
+        <hr />
+      </div>
+      <SectionItem>
+        <template #heading>
+          Данные
+        </template>
 
-          <InputItem>
-            <template #name>
-              <AppInput v-model="user.name" @input.native="errors.username = ''" :placeholder="'Имя'"
-                :userError="errors.username" />
-            </template>
-            <template #role>
-              <AppSelect v-model="user.role" :userError="errors.role" @change.native="errors.role = ''" />
-            </template>
-            <template #email>
-              <AppInput v-model="user.email" @input.native="errors.email = ''" :placeholder="'Почта'"
-                :userError="errors.email" />
-            </template>
-            <template #password>
-              <AppInput v-model="user.password" @input.native="errors.password = ''" type="password"
-                :placeholder="'Пароль'" :userError="errors.password" />
-            </template>
-            <template #password-repeat>
-              <AppInput v-model="user.password_repeat" @input.native="errors.password_repeat = ''" type="password"
-                :placeholder="'Пароль'" :userError="errors.password_repeat" />
-            </template>
-          </InputItem>
-        </SectionItem>
-        <div class="container">
-          <hr />
-        </div>
-        <SectionItem>
-          <template #heading>
-            Фото профиля
+        <InputItem>
+          <template #name>
+            <AppInput v-model="user.name" @input.native="errors.username = ''" placeholder="Имя"
+              :error="errors.username" />
           </template>
-          <PhotoUpload @change="onFileChange" class="profile__photo" />
-        </SectionItem>
-        <SectionItem>
-          <AppCheckbox v-model="isAgreement">
-            Нажимая на кнопку “Регистрация”, я подтверждаю свое соглашение с политикой
-            конфиденциальности и обработки персональных данных
-          </AppCheckbox>
-        </SectionItem>
-        <AppButton @click="submit" :disabled="!isAgreement" />
-      </main>
+          <template #role>
+            <AppSelect v-model="user.role" :options="options" :error="errors.role" @change.native="errors.role = ''" />
+          </template>
+          <template #email>
+            <AppInput v-model="user.email" @input.native="errors.email = ''" placeholder="Почта"
+              :error="errors.email" />
+          </template>
+          <template #password>
+            <AppInput v-model="user.password" @input.native="errors.password = ''" type="password" placeholder="Пароль"
+              :error="errors.password" />
+          </template>
+          <template #password-repeat>
+            <AppInput v-model="user.password_repeat" @input.native="errors.password_repeat = ''" type="password"
+              placeholder="Пароль" :error="errors.password_repeat" />
+          </template>
+        </InputItem>
+      </SectionItem>
+      <div class="container">
+        <hr />
+      </div>
+      <SectionItem>
+        <template #heading>
+          Фото профиля
+        </template>
+        <PhotoUpload @change="onFileChange" class="profile__photo" />
+      </SectionItem>
+      <SectionItem>
+        <AppCheckbox v-model="isAgreement" class="checkbox" >
+          <p>Нажимая на кнопку “Регистрация”, я подтверждаю свое соглашение с политикой
+          конфиденциальности и обработки персональных данных</p>
+        </AppCheckbox>
+      </SectionItem>
+      <AppButton @click="submit" :disabled="!isAgreement" />
+    </main>
   </div>
 </template>
 
 <script>
+import { registerRequest } from './api/auth.js';
 export default {
   data() {
     return {
       formOpen: false,
       success: false,
-      public: true,
       isAgreement: true,
       user: {
         name: "",
@@ -92,9 +91,16 @@ export default {
         email: "",
         password: "",
         password_repeat: "",
-        photo: ""
+        photo: "",
+        public: true,
       },
-      errors: {}
+      errors: {},
+      options: [
+        { text: 'Должность', value: '' },
+        { text: 'Руководитель', value: 'supervisor' },
+        { text: 'Студент', value: 'student' }
+      ],
+      checkboxToggleId: 'toggle'
     }
   },
   methods: {
@@ -107,31 +113,18 @@ export default {
         return;
       }
 
-      const formData = new FormData();
-      formData.append('public ', Number(this.public));
-      formData.append('username', this.user.name);
-      formData.append('role', this.user.role);
-      formData.append('email', this.user.email);
-      formData.append('password', this.user.password);
-      formData.append('password_repeat', this.user.password_repeat);
-      formData.append('photo', this.user.photo);
-      
-      const response = await fetch('https://lmstestapi.reezonly.com/v1/user/signup', {
-        method: 'POST',
-        body: formData
-      });
+      const registerData = await registerRequest(this.user);
 
-      const result = await response.json();
-      this.success = result.success;
+      this.success = registerData.success;
 
-      if(this.success === true) {
+      if (this.success === true) {
         this.$emit('response', this.success);
         return;
       }
 
       this.errors = Object.assign(
         {}, Object.fromEntries(
-          Object.entries(result.errors).map(([key, value]) => [key, value[0]])
+          Object.entries(registerData.errors).map(([key, value]) => [key, value[0]])
         )
       );
 

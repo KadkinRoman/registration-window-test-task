@@ -1,38 +1,27 @@
 <template>
   <div>
-    <select  :class="{ 'default-option': !userData }" :value="userData" v-model="selected" class="control" @input="$emit('change', $event.target.value)">
-      <option value="" disabled selected>Должность:</option>
-      <option v-for="option in options" v-bind:value="option.value">
+    <select  :class="{ 'default-option': !value }" class="control" :value="value" @input="$emit('input', $event.target.value)">
+      <option v-for="option in options" :value="option.value" class="option">
         {{ option.text }}
       </option>
     </select>
-    <small v-if="userError" class="control-error-text">{{ userError }}</small>
+    <small v-if="error" class="control-error-text">{{ error }}</small>
   </div>
 </template>
 
 <script>
 export default {
-  model: {
-    prop: 'userData',
-    event: 'change'
-  },
   props: {
-    userData: {
+    value: {
       type: String,
     },
-    userError: {
+    error: {
       type: String,
     },
-  },
-  data() {
-    return {
-      selected: '',
-      options: [
-        { text: 'Руководитель', value: 'supervisor' },
-        { text: 'Студент', value: 'student' }
-      ]
+    options: {
+      type: Array
     }
-  }
+  },
 }
 </script>
 
@@ -42,13 +31,10 @@ export default {
   border: 1px solid #e6e6eb;
   border-radius: 11px;
   padding: 10px;
-}
-
-.control::placeholder {
+  font-family: Montserrat;
   font-size: 14px;
   line-height: 136%;
   letter-spacing: -0.0015em;
-  color: #9292a0;
 }
 
 .control:focus {
@@ -66,5 +52,13 @@ export default {
   line-height: 136%;
   letter-spacing: -0.0015em;
   color: #9292A0;
+}
+
+.option:first-child {
+  display: none;
+}
+
+.option:not(:first-child) {
+  color: #000;
 }
 </style>

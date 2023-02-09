@@ -1,77 +1,171 @@
 <template>
-  <div class="checkbox">
-    <input  class="checkbox__input" type="checkbox" id="checkbox-input" :checked="isAgreement"
-    @input="$emit('change', $event.target.checked)" >
-    <label class="checkbox__label" for="checkbox-input">
-      <span class="checkbox__span"></span> 
-      <slot></slot>
+  <div :class="checkbox">
+    <input type="checkbox" :id="newId" class="input" :checked="value" @change="$emit('input', $event.target.checked)">
+    <label class="label" :for="newId">
+      <p class="text">
+        <slot></slot>
+      </p>
     </label>
+
   </div>
 </template>
 
 <script>
 export default {
-  model: {
-    prop: 'isAgreement',
-    event: 'change'
-  },
   props: {
-    isAgreement: {
+    value: {
       type: Boolean
+    },
+    checkbox: {
+      type: String
+    },
+    id: {
+      type: String,
+      default: ''
     }
+  },
+  data() {
+    return {
+      newId: '',
+    }
+  },
+  methods: {
+    createId() {
+      if (this.id.length > 0) {
+        this.newId = this.id;
+        return;
+      }
+
+      this.newId = Math.floor(Math.random() * Date.now());
+    }
+  },
+
+  created() {
+    this.createId();
   }
 }
 </script>
 
 <style scoped>
-.checkbox__input {
+/* toggle-checkbox */
+.toggle-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-checkbox .input {
   display: none;
 }
 
-.checkbox__input+.checkbox__label {
-  font-weight: normal;
-  cursor: pointer;
-}
-
-.checkbox .checkbox__label {
-  display: grid;
-  grid-template-columns: 26px 1fr;
-  max-width: 80%;
-  font-size: 14px;
-  line-height: 136%;
-  letter-spacing: -0.0015em;
-  color: #000;
-  gap: 5px;
-}
-
-.checkbox__input+.checkbox__label .checkbox__span {
-  display: inline-block;
-  vertical-align: middle;
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
+.toggle-checkbox .label {
   position: relative;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  width: 40px;
+  height: 20px;
+  background-color: #e4e4e4;
+  border-radius: 60px;
+  transition: background 0.4s;
+  margin: 0 15px 0 0;
+}
+
+.toggle-checkbox .label::before,
+.toggle-checkbox .label::after {
+  content: "";
+  display: block;
+  position: absolute;
+}
+
+.toggle-checkbox .label::before {
+  right: 1px;
+  left: 1px;
+  top: 1px;
+  bottom: 1px;
+  background-color: #F1F1F1;
+  border-radius: 60px;
+  transition: background 0.4s;
+}
+
+.toggle-checkbox .label::after {
+  top: -1px;
+  left: 0;
+  width: 22px;
+  height: 22px;
+  background-color: #fff;
+  border-radius: 100%;
+  box-shadow: 0 1px 5px rgb(0 0 0 / 30%);
+  transition: transform 0.4s;
+}
+
+
+.toggle-checkbox .input:checked+.label {
+  background-color: #7d7aff;
+}
+
+.toggle-checkbox .input:checked+.label::before {
+  background-color: #6c6adb;
+}
+
+.toggle-checkbox .input:checked+.label::after {
+  transform: translateX(20px);
+}
+
+.toggle-checkbox .text {
+  padding: 0 0 0 55px;
+  max-width: 680px;
+}
+
+/* checkbox */
+.checkbox {
+  display: flex;
+}
+
+.checkbox .input {
+  display: none;
+}
+
+.checkbox .label {
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  margin: 0 15px 0 0;
+}
+
+.checkbox .label:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
   background: #fff;
   border: 1px solid var(--color-purple);
   border-radius: 5px;
-  transform: matrix(1, 0, 0, -1, 0, 0);
+  transition: background 0.4s;
 }
 
-.checkbox__input:checked+.checkbox__label .checkbox__span {
+.checkbox .input:checked+.label:before {
   background: var(--color-purple);
 }
 
-.checkbox__input:checked+.checkbox__label .checkbox__span::before {
+.checkbox .input:checked+.label:after {
   content: '';
   position: absolute;
-  right: 50%;
-  top: 40%;
-  width: 10px;
-  height: 4px;
+  left: 7px;
+  top: 3px;
+  width: 6px;
+  height: 12px;
   border: solid #fff;
-  border-width: 0px 2px 2px 0px;
-  margin: -1px -1px 0 -1px;
-  transform: rotate(225deg) translate(-50%, 50%);
+  border-width: 2px 0 0 2px;
+  transform: rotate(225deg);
   z-index: 2;
+}
+
+.checkbox .text {
+  padding: 0 0 0 35px;
+  max-width: 680px;
 }
 </style>
